@@ -18,52 +18,316 @@
  "hide_custom": 0,
  "public": 1,
  "is_hidden": 0,
- "content": "[{\"id\":\"kpi-h\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Regence Workspace</b></span>\",\"col\":12}},{\"id\":\"nc0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Projects\",\"col\":3}},{\"id\":\"nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open RFIs\",\"col\":3}},{\"id\":\"nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open NCRs\",\"col\":3}},{\"id\":\"nc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open HSE Incidents\",\"col\":3}},{\"id\":\"sp-h\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"qa-h\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\",\"col\":12}},{\"id\":\"sc0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Project\",\"col\":3}},{\"id\":\"sc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Daily Site Reports\",\"col\":3}},{\"id\":\"sc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open RFIs\",\"col\":3}},{\"id\":\"sc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open NCRs\",\"col\":3}},{\"id\":\"sc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Construction Budget\",\"col\":3}},{\"id\":\"cm-h\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Core Pages</b></span>\",\"col\":12}},{\"id\":\"card0\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Planning\",\"col\":4}},{\"id\":\"card1\",\"type\":\"card\",\"data\":{\"card_name\":\"Site Operations\",\"col\":4}},{\"id\":\"card2\",\"type\":\"card\",\"data\":{\"card_name\":\"Quality & HSE\",\"col\":4}},{\"id\":\"card3\",\"type\":\"card\",\"data\":{\"card_name\":\"ERPNext Docs\",\"col\":4}}]",
+ "content": "[{\"id\": \"kpi-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Regence Workspace</b></span>\", \"col\": 12}}, {\"id\": \"nc0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Open Tasks\", \"col\": 3}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Customers\", \"col\": 3}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Suppliers\", \"col\": 3}}, {\"id\": \"sp-h\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"qa-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Project\", \"col\": 2}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Sales Order\", \"col\": 2}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Purchase Order\", \"col\": 2}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Stock Entry\", \"col\": 2}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Journal Entry\", \"col\": 2}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Employee\", \"col\": 2}}, {\"id\": \"cm-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Core Modules</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"card\", \"data\": {\"card_name\": \"Project Planning\", \"col\": 3}}, {\"id\": \"card1\", \"type\": \"card\", \"data\": {\"card_name\": \"Selling\", \"col\": 3}}, {\"id\": \"card2\", \"type\": \"card\", \"data\": {\"card_name\": \"Buying\", \"col\": 3}}, {\"id\": \"card3\", \"type\": \"card\", \"data\": {\"card_name\": \"Stock\", \"col\": 3}}, {\"id\": \"card4\", \"type\": \"card\", \"data\": {\"card_name\": \"Accounting\", \"col\": 3}}, {\"id\": \"card5\", \"type\": \"card\", \"data\": {\"card_name\": \"HR\", \"col\": 3}}, {\"id\": \"card6\", \"type\": \"card\", \"data\": {\"card_name\": \"Setup\", \"col\": 3}}]",
  "doctype": "Workspace",
  "number_cards": [
-  {"number_card_name": "Active Projects", "label": "Active Projects", "doctype": "Workspace Number Card"},
-  {"number_card_name": "Open RFIs", "label": "Open RFIs", "doctype": "Workspace Number Card"},
-  {"number_card_name": "Open NCRs", "label": "Open NCRs", "doctype": "Workspace Number Card"},
-  {"number_card_name": "Open HSE Incidents", "label": "Open HSE Incidents", "doctype": "Workspace Number Card"}
+  {
+   "number_card_name": "Active Projects",
+   "label": "Active Projects",
+   "doctype": "Workspace Number Card"
+  },
+  {
+   "number_card_name": "Open Tasks",
+   "label": "Open Tasks",
+   "doctype": "Workspace Number Card"
+  },
+  {
+   "number_card_name": "Open Issues",
+   "label": "Open Issues",
+   "doctype": "Workspace Number Card"
+  },
+  {
+   "number_card_name": "Open Customers",
+   "label": "Open Customers",
+   "doctype": "Workspace Number Card"
+  }
  ],
  "charts": [],
  "shortcuts": [
-  {"type": "DocType", "link_to": "Construction Project Detail", "url": null, "doc_view": "", "kanban_board": null, "label": "New Project", "icon": null, "restrict_to_domain": null, "report_ref_doctype": null, "stats_filter": null, "color": "Green", "format": null, "doctype": "Workspace Shortcut"},
-  {"type": "DocType", "link_to": "Daily Site Report", "url": null, "doc_view": "", "kanban_board": null, "label": "Daily Site Reports", "icon": null, "restrict_to_domain": null, "report_ref_doctype": null, "stats_filter": null, "color": "Blue", "format": null, "doctype": "Workspace Shortcut"},
-  {"type": "DocType", "link_to": "Request for Information", "url": null, "doc_view": "", "kanban_board": null, "label": "Open RFIs", "icon": null, "restrict_to_domain": null, "report_ref_doctype": null, "stats_filter": null, "color": "Orange", "format": null, "doctype": "Workspace Shortcut"},
-  {"type": "DocType", "link_to": "Construction Budget", "url": null, "doc_view": "", "kanban_board": null, "label": "Construction Budget", "icon": null, "restrict_to_domain": null, "report_ref_doctype": null, "stats_filter": null, "color": "Purple", "format": null, "doctype": "Workspace Shortcut"}
+  {
+   "type": "DocType",
+   "link_to": "Project",
+   "label": "New Project",
+   "color": "Green",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  },
+  {
+   "type": "DocType",
+   "link_to": "Sales Order",
+   "label": "Sales Order",
+   "color": "Blue",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  },
+  {
+   "type": "DocType",
+   "link_to": "Purchase Order",
+   "label": "Purchase Order",
+   "color": "Orange",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  },
+  {
+   "type": "DocType",
+   "link_to": "Stock Entry",
+   "label": "Stock Entry",
+   "color": "Purple",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  },
+  {
+   "type": "DocType",
+   "link_to": "Journal Entry",
+   "label": "Journal Entry",
+   "color": "Pink",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  },
+  {
+   "type": "DocType",
+   "link_to": "Employee",
+   "label": "Employee",
+   "color": "Red",
+   "icon": null,
+   "doctype": "Workspace Shortcut"
+  }
  ],
  "links": [
-  {"type": "Card Break", "label": "Project Planning", "hidden": 0, "link_type": "DocType", "link_to": null, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Construction Project Detail", "link_type": "DocType", "link_to": "Construction Project Detail", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Contract", "link_type": "DocType", "link_to": "Contract", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Construction Budget", "link_type": "DocType", "link_to": "Construction Budget", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Card Break", "label": "Site Operations", "hidden": 0, "link_type": "DocType", "link_to": null, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Daily Site Report", "link_type": "DocType", "link_to": "Daily Site Report", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Request for Information", "link_type": "DocType", "link_to": "Request for Information", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Drawing Register", "link_type": "DocType", "link_to": "Drawing Register", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Card Break", "label": "Quality & HSE", "hidden": 0, "link_type": "DocType", "link_to": null, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Inspection Request", "link_type": "DocType", "link_to": "Inspection Request", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Non-Conformance Report", "link_type": "DocType", "link_to": "Non-Conformance Report", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "HSE Incident", "link_type": "DocType", "link_to": "HSE Incident", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Permit to Work", "link_type": "DocType", "link_to": "Permit to Work", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Card Break", "label": "Commercial", "hidden": 0, "link_type": "DocType", "link_to": null, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Interim Payment Certificate", "link_type": "DocType", "link_to": "Interim Payment Certificate", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Variation Order", "link_type": "DocType", "link_to": "Variation Order", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Card Break", "label": "ERPNext Integration", "hidden": 0, "link_type": "DocType", "link_to": null, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Project", "link_type": "DocType", "link_to": "Project", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Customer", "link_type": "DocType", "link_to": "Customer", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Supplier", "link_type": "DocType", "link_to": "Supplier", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Item", "link_type": "DocType", "link_to": "Item", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "UOM", "link_type": "DocType", "link_to": "UOM", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Employee", "link_type": "DocType", "link_to": "Employee", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Account", "link_type": "DocType", "link_to": "Account", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Cost Center", "link_type": "DocType", "link_to": "Cost Center", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"},
-  {"type": "Link", "label": "Warehouse", "link_type": "DocType", "link_to": "Warehouse", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0, "doctype": "Workspace Link"}
+  {
+   "type": "Card Break",
+   "label": "Project Planning",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Project",
+   "link_type": "DocType",
+   "link_to": "Project",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Task",
+   "link_type": "DocType",
+   "link_to": "Task",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "Selling",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Customer",
+   "link_type": "DocType",
+   "link_to": "Customer",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Sales Order",
+   "link_type": "DocType",
+   "link_to": "Sales Order",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Sales Invoice",
+   "link_type": "DocType",
+   "link_to": "Sales Invoice",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Quotation",
+   "link_type": "DocType",
+   "link_to": "Quotation",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "Buying",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Supplier",
+   "link_type": "DocType",
+   "link_to": "Supplier",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Purchase Order",
+   "link_type": "DocType",
+   "link_to": "Purchase Order",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Purchase Invoice",
+   "link_type": "DocType",
+   "link_to": "Purchase Invoice",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Purchase Receipt",
+   "link_type": "DocType",
+   "link_to": "Purchase Receipt",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "Stock",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Item",
+   "link_type": "DocType",
+   "link_to": "Item",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Warehouse",
+   "link_type": "DocType",
+   "link_to": "Warehouse",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Stock Entry",
+   "link_type": "DocType",
+   "link_to": "Stock Entry",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "Accounting",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Account",
+   "link_type": "DocType",
+   "link_to": "Account",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Journal Entry",
+   "link_type": "DocType",
+   "link_to": "Journal Entry",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Cost Center",
+   "link_type": "DocType",
+   "link_to": "Cost Center",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Budget",
+   "link_type": "DocType",
+   "link_to": "Budget",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "HR",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Employee",
+   "link_type": "DocType",
+   "link_to": "Employee",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Card Break",
+   "label": "Setup",
+   "link_type": "DocType",
+   "link_to": null,
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Company",
+   "link_type": "DocType",
+   "link_to": "Company",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "UOM",
+   "link_type": "DocType",
+   "link_to": "UOM",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Department",
+   "link_type": "DocType",
+   "link_to": "Department",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  },
+  {
+   "type": "Link",
+   "label": "Designation",
+   "link_type": "DocType",
+   "link_to": "Designation",
+   "hidden": 0,
+   "doctype": "Workspace Link"
+  }
  ],
  "quick_lists": [],
  "custom_blocks": [],
  "roles": []
 }
-
-
