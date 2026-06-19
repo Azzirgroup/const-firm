@@ -4,10 +4,7 @@ frappe.pages["regence-overview"].on_page_load = function (wrapper) {
 		title: __("Overview"),
 		single_column: true,
 	});
-	page.add_action_item(__("Refresh"),               () => render_all());
-	page.add_action_item(__("Construction Dashboard"), () => frappe.set_route("construction-dashboard"));
-	page.add_action_item(__("Equipment Tracker"),      () => frappe.set_route("equipment-tracker"));
-	page.add_action_item(__("Site Labour"),            () => frappe.set_route("site-labour"));
+	page.add_action_item(__("Refresh"), () => render_all());
 	$(page.body).html(`<div id="ov-root" style="padding:20px"></div>`);
 	render_all();
 };
@@ -23,12 +20,11 @@ async function render_all() {
 		fjc = [], mr_count = 0, att_today = [],
 		emp_count = 0, assets = [],
 		invoices_due = {total:0,count:0},
-		pi_month = 0,
+		pi_month = 0, si_month = 0,
 		pos = {total:0,count:0}, sos = {total:0,count:0},
 		today = "",
 	} = d;
 
-	// Derived
 	const att_map = {};
 	att_today.forEach(a => { att_map[a.status] = a.cnt || 0; });
 	const present    = att_map["Present"] || 0;
@@ -38,18 +34,50 @@ async function render_all() {
 	const total_assets = assets.reduce((s,a)=>s+a.cnt,0);
 	const fjc_cost   = fjc.reduce((s,c) => s+(c.total_material_cost||0)+(c.total_service_cost||0), 0);
 	const fjc_comp   = fjc.filter(c => c.status === "Completed").length;
+	const profit_mtd = si_month - pi_month;
 
 	root.html(`
-		<div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563EB 100%);border-radius:12px;padding:24px 28px;margin-bottom:24px;color:#fff">
-			<div style="font-size:1.5rem;font-weight:700">${__("Construction Overview")}</div>
+		<!-- Hero banner -->
+		<div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563EB 100%);border-radius:12px;padding:24px 28px;margin-bottom:20px;color:#fff">
+			<div style="font-size:1.5rem;font-weight:700">${__("Regence — Construction Overview")}</div>
 			<div style="opacity:.8;font-size:.9rem;margin-top:4px">${frappe.datetime.str_to_user(today)} · ${__("Real-time snapshot")}</div>
 			<div class="row" style="margin-top:20px">
 				${top_stat(__("Active Projects"),  projects.length,           "📁")}
 				${top_stat(__("Open Tasks"),       open_tasks,                "✅")}
 				${top_stat(__("Overdue Tasks"),    overdue_tasks,             "⚠️")}
-				${top_stat(__("Pending Requests"), mr_count,                  "📦")}
+				${top_stat(__("Pending MRs"),      mr_count,                  "📦")}
 				${top_stat(__("FJC This Month"),   fjc.length,                "🔧")}
 				${top_stat(__("Staff Present"),    `${present}/${emp_count}`, "👷")}
+			</div>
+		</div>
+
+		<!-- Revenue vs Spend this month -->
+		<div class="row" style="margin-bottom:16px">
+			<div class="col-md-3">
+				<div style="background:linear-gradient(135deg,#064e3b,#059669);border-radius:10px;padding:14px 18px;color:#fff;text-align:center;height:100%">
+					<div style="font-size:.8rem;opacity:.85">${__("Revenue / Month")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:4px">${frappe.format(si_month,{fieldtype:"Currency"})}</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div style="background:linear-gradient(135deg,#7f1d1d,#DC2626);border-radius:10px;padding:14px 18px;color:#fff;text-align:center;height:100%">
+					<div style="font-size:.8rem;opacity:.85">${__("Spend / Month")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:4px">${frappe.format(pi_month,{fieldtype:"Currency"})}</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div style="background:linear-gradient(135deg,${profit_mtd>=0?"#14532d,#16A34A":"#7f1d1d,#DC2626"});border-radius:10px;padding:14px 18px;color:#fff;text-align:center;height:100%">
+					<div style="font-size:.8rem;opacity:.85">${__("Profit / Month")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:4px">${frappe.format(Math.abs(profit_mtd),{fieldtype:"Currency"})}</div>
+					<div style="font-size:.7rem;opacity:.8">${profit_mtd>=0?"▲ "+__("Surplus"):"▼ "+__("Deficit")}</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div style="background:linear-gradient(135deg,#7f1d1d,#9f1239);border-radius:10px;padding:14px 18px;color:#fff;text-align:center;height:100%">
+					<div style="font-size:.8rem;opacity:.85">${__("Draft Payables")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:4px">${frappe.format(invoices_due.total,{fieldtype:"Currency"})}</div>
+					<div style="font-size:.7rem;opacity:.8">${invoices_due.count} ${__("invoices")}</div>
+				</div>
 			</div>
 		</div>
 
@@ -94,18 +122,22 @@ async function render_all() {
 			</div>
 		</div>
 
+		<!-- Quick Navigation -->
 		<div class="frappe-card" style="padding:16px">
 			<h5 style="margin:0 0 14px;font-size:1rem">${__("Quick Navigation")}</h5>
 			<div style="display:flex;flex-wrap:wrap;gap:10px">
-				${qlink("construction-dashboard", __("Construction Dashboard"), "#2563EB", "📊")}
-				${qlink("equipment-tracker",      __("Equipment Tracker"),      "#D97706", "🔩")}
-				${qlink("site-labour",            __("Site Labour"),            "#16A34A", "👷")}
-				${qlink_doc("Field Job Card",   __("Field Job Cards"),       "#7C3AED", "🔧")}
-				${qlink_doc("BOQ",              __("Bill of Quantities"),     "#0891B2", "📋")}
-				${qlink_doc("Material Request", __("Material Requests"),      "#0891B2", "📦")}
-				${qlink_doc("Asset",            __("Assets"),                 "#EA580C", "🏗️")}
-				${qlink_doc("Project",          __("Projects"),               "#4F46E5", "📁")}
-				${qlink_doc("Purchase Invoice", __("Purchase Invoices"),      "#DC2626", "🧾")}
+				${qlink("construction-dashboard", __("Construction Dashboard"), "#2563EB",  "📊")}
+				${qlink("equipment-tracker",      __("Equipment Tracker"),      "#D97706",  "🔩")}
+				${qlink("site-labour",            __("Site Labour"),            "#16A34A",  "👷")}
+				${qlink("financial-analytics",    __("Financial Analytics"),    "#059669",  "💰")}
+				${qlink("procurement-dashboard",  __("Procurement"),            "#0891B2",  "📦")}
+				${qlink_doc("Field Job Card",     __("Field Job Cards"),        "#7C3AED",  "🔧")}
+				${qlink_doc("Project BOQ",        __("Bill of Quantities"),     "#0891B2",  "📋")}
+				${qlink_doc("Material Request",   __("Material Requests"),      "#D97706",  "📦")}
+				${qlink_doc("Asset",              __("Assets"),                 "#EA580C",  "🏗️")}
+				${qlink_doc("Project",            __("Projects"),               "#4F46E5",  "📁")}
+				${qlink_doc("Purchase Invoice",   __("Purchase Invoices"),      "#DC2626",  "🧾")}
+				${qlink_doc("Sales Invoice",      __("Sales Invoices"),         "#16A34A",  "💵")}
 			</div>
 		</div>
 	`);

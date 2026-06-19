@@ -7,6 +7,7 @@ frappe.pages["site-labour"].on_page_load = function (wrapper) {
 	page.add_action_item(__("Refresh"),        () => render_all());
 	page.add_action_item(__("Mark Attendance"), () => frappe.new_doc("Attendance"));
 	page.add_action_item(__("Process Payroll"), () => frappe.new_doc("Payroll Entry"));
+	page.add_action_item(__("Leave Application"), () => frappe.new_doc("Leave Application"));
 	$(page.body).html(`<div id="sl-root" style="padding:20px"></div>`);
 	render_all();
 };
@@ -16,7 +17,11 @@ async function render_all() {
 		`<div style="text-align:center;padding:40px;color:#888">${__("Loading…")}</div>`);
 
 	const r = await frappe.call({ method: "regence.regence.api.get_site_labour" });
-	const { all_emp = [], att_today = [], att_month = [], leaves = [], slips = [], dept = [], today = "" } = r.message || {};
+	const {
+		all_emp = [], att_today = [], att_month = [], leaves = [], slips = [],
+		dept = [], monthly_trend = [], overtime = [],
+		slip_totals = {gross:0,net:0}, today = "",
+	} = r.message || {};
 
 	const att_map = {};
 	att_today.forEach(a => { att_map[a.status] = (att_map[a.status]||0)+1; });
@@ -26,23 +31,52 @@ async function render_all() {
 	const total    = all_emp.length;
 	const att_rate = total ? Math.round(present/total*100) : 0;
 
-	// att_month from Python is already grouped [{status, count}]
 	const month_map = {};
 	att_month.forEach(a => { month_map[a.status] = a.count || 0; });
 
 	root.html(`
-		<div class="row" style="margin-bottom:24px">
+		<!-- KPIs -->
+		<div class="row" style="margin-bottom:20px">
 			${kpi(__("Total Employees"),    total,         "#2563EB")}
 			${kpi(__("Present Today"),      `${present}<small style="font-size:.9rem"> (${att_rate}%)</small>`, "#16A34A")}
 			${kpi(__("Absent Today"),       absent,        absent ? "#DC2626" : "#6B7280")}
 			${kpi(__("On Leave"),           on_leave,      "#D97706")}
 			${kpi(__("Pending Leaves"),     leaves.length, leaves.length ? "#7C3AED" : "#16A34A")}
-			${kpi(__("Salary Slips Draft"), slips.length,  slips.length  ? "#0891B2" : "#16A34A")}
+			${kpi(__("Overtime Today"),     overtime.length, overtime.length ? "#0891B2" : "#16A34A")}
 		</div>
 
+		<!-- Payroll summary banner -->
+		${slips.length ? `<div class="row" style="margin-bottom:16px">
+			<div class="col-md-4">
+				<div style="background:linear-gradient(135deg,#1e3a5f,#2563EB);border-radius:10px;padding:14px 18px;color:#fff;text-align:center">
+					<div style="font-size:.8rem;opacity:.85">${__("Draft Salary Slips")}</div>
+					<div style="font-size:1.5rem;font-weight:700;margin-top:2px">${slips.length}</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div style="background:linear-gradient(135deg,#064e3b,#059669);border-radius:10px;padding:14px 18px;color:#fff;text-align:center">
+					<div style="font-size:.8rem;opacity:.85">${__("Total Gross Pay")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:2px">${frappe.format(slip_totals.gross,{fieldtype:"Currency"})}</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div style="background:linear-gradient(135deg,#1a1a2e,#7C3AED);border-radius:10px;padding:14px 18px;color:#fff;text-align:center">
+					<div style="font-size:.8rem;opacity:.85">${__("Total Net Pay")}</div>
+					<div style="font-size:1.2rem;font-weight:700;margin-top:2px">${frappe.format(slip_totals.net,{fieldtype:"Currency"})}</div>
+				</div>
+			</div>
+		</div>` : ""}
+
+		<!-- Attendance bar -->
 		<div class="frappe-card" style="padding:16px;margin-bottom:16px">
 			<h5 style="margin:0 0 12px">${__("Today's Attendance Rate")}</h5>
 			${attendance_bar(att_map, total)}
+		</div>
+
+		<!-- Monthly trend -->
+		<div class="frappe-card" style="padding:16px;margin-bottom:16px">
+			<h5 style="margin:0 0 14px">${__("Attendance Trend — Last 6 Months")}</h5>
+			${monthly_attendance_trend(monthly_trend)}
 		</div>
 
 		<div class="row">
@@ -71,7 +105,11 @@ async function render_all() {
 					<h5 style="margin:0 0 12px">${__("Department Headcount")}</h5>
 					${dept_chart(dept)}
 				</div>
-				${slips.length ? `<div class="frappe-card" style="padding:16px">
+				${overtime.length ? `<div class="frappe-card" style="padding:16px">
+					<h5 style="margin:0 0 12px;color:#0891B2">${__("Overtime Today")}</h5>
+					${overtime_list(overtime)}
+				</div>` : ""}
+				${slips.length ? `<div class="frappe-card" style="padding:16px;margin-top:16px">
 					<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
 						<h5 style="margin:0">${__("Draft Salary Slips")}</h5>
 						<a href="/app/salary-slip" style="font-size:.8rem">${__("View all →")}</a>
@@ -105,6 +143,37 @@ function attendance_bar(map, total) {
 		</div>`).join("");
 	return `<div style="display:flex;border-radius:8px;overflow:hidden;margin-bottom:10px">${segs}</div>
 		<div style="display:flex;flex-wrap:wrap;gap:12px">${legend}</div>`;
+}
+
+function monthly_attendance_trend(trend) {
+	if (!trend.length) return `<p class="text-muted small">${__("No trend data available")}</p>`;
+	const max_v = Math.max(...trend.map(t=>(t.present||0)+(t.absent||0)+(t.on_leave||0)+(t.half_day||0)), 1);
+	const BAR_H = 90;
+	return `<div style="overflow-x:auto">
+		<div style="display:flex;align-items:flex-end;gap:6px;min-width:${trend.length*80}px">
+			${trend.map(t=>{
+				const total = (t.present||0)+(t.absent||0)+(t.on_leave||0)+(t.half_day||0);
+				const ph = Math.round((t.present||0)/max_v*BAR_H);
+				const ah = Math.round((t.absent||0)/max_v*BAR_H);
+				const lh = Math.round((t.on_leave||0)/max_v*BAR_H);
+				return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:60px">
+					<div style="font-size:.7rem;color:#16A34A;font-weight:600;margin-bottom:3px">${t.present||0}</div>
+					<div style="display:flex;align-items:flex-end;gap:3px;height:${BAR_H}px">
+						<div style="width:16px;background:#16A34A;border-radius:3px 3px 0 0;height:${ph}px;min-height:${t.present?2:0}px" title="${__('Present')}: ${t.present||0}"></div>
+						<div style="width:16px;background:#DC2626;border-radius:3px 3px 0 0;height:${ah}px;min-height:${t.absent?2:0}px" title="${__('Absent')}: ${t.absent||0}"></div>
+						<div style="width:16px;background:#2563EB;border-radius:3px 3px 0 0;height:${lh}px;min-height:${t.on_leave?2:0}px" title="${__('On Leave')}: ${t.on_leave||0}"></div>
+					</div>
+					<div style="font-size:.7rem;color:#6b7280;margin-top:5px;text-align:center">${t.month}</div>
+				</div>`;
+			}).join("")}
+		</div>
+		<div style="display:flex;gap:14px;margin-top:10px">
+			${[["Present","#16A34A"],["Absent","#DC2626"],["On Leave","#2563EB"]].map(([l,c])=>
+				`<div style="display:flex;align-items:center;gap:5px;font-size:.78rem">
+					<div style="width:10px;height:10px;border-radius:2px;background:${c}"></div> ${__(l)}
+				</div>`).join("")}
+		</div>
+	</div>`;
 }
 
 function attendance_table(rows) {
@@ -175,6 +244,14 @@ function dept_chart(dept) {
 			<div style="background:#e5e7eb;border-radius:4px;height:8px">
 				<div style="background:#2563EB;width:${Math.round(d.count/max*100)}%;height:8px;border-radius:4px"></div>
 			</div>
+		</div>`).join("")}</div>`;
+}
+
+function overtime_list(rows) {
+	return `<div>${rows.map(r=>`
+		<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f3f4f6;font-size:.82rem">
+			<span style="font-weight:500">${r.employee_name}</span>
+			<span style="font-weight:700;color:#0891B2">${parseFloat(r.working_hours).toFixed(1)} hrs</span>
 		</div>`).join("")}</div>`;
 }
 
