@@ -5,7 +5,7 @@
    "chart_name": "Project Summary"
   }
  ],
- "content": "[{\"id\": \"qa-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Project\", \"col\": 2}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Sales Order\", \"col\": 2}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Purchase Order\", \"col\": 2}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Stock Entry\", \"col\": 2}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Journal Entry\", \"col\": 2}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Employee\", \"col\": 2}}, {\"id\": \"sc6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Field Job Card\", \"col\": 2}}, {\"id\": \"sc6b\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Project BOQ\", \"col\": 2}}, {\"id\": \"sc7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Leave Application\", \"col\": 2}}, {\"id\": \"sc8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Salary Slip\", \"col\": 2}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cm-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Core Modules</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"card\", \"data\": {\"card_name\": \"Project Planning\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"card\", \"data\": {\"card_name\": \"Selling\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"card\", \"data\": {\"card_name\": \"Buying\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"card\", \"data\": {\"card_name\": \"Stock\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"card\", \"data\": {\"card_name\": \"Accounting\", \"col\": 4}}, {\"id\": \"card5\", \"type\": \"card\", \"data\": {\"card_name\": \"HR\", \"col\": 4}}, {\"id\": \"card6\", \"type\": \"card\", \"data\": {\"card_name\": \"Subcontracting\", \"col\": 4}}, {\"id\": \"card7\", \"type\": \"card\", \"data\": {\"card_name\": \"Setup\", \"col\": 4}}]",
+ "content": "[{\"id\": \"qa-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Project\", \"col\": 2}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Sales Order\", \"col\": 2}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Purchase Order\", \"col\": 2}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Stock Entry\", \"col\": 2}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Journal Entry\", \"col\": 2}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Employee\", \"col\": 2}}, {\"id\": \"sc6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Field Job Card\", \"col\": 2}}, {\"id\": \"sc7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Leave Application\", \"col\": 2}}, {\"id\": \"sc8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Salary Slip\", \"col\": 2}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cm-h\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Core Modules</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"card\", \"data\": {\"card_name\": \"Project Planning\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"card\", \"data\": {\"card_name\": \"Selling\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"card\", \"data\": {\"card_name\": \"Buying\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"card\", \"data\": {\"card_name\": \"Stock\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"card\", \"data\": {\"card_name\": \"Accounting\", \"col\": 4}}, {\"id\": \"card5\", \"type\": \"card\", \"data\": {\"card_name\": \"HR\", \"col\": 4}}, {\"id\": \"card6\", \"type\": \"card\", \"data\": {\"card_name\": \"Subcontracting\", \"col\": 4}}, {\"id\": \"card7\", \"type\": \"card\", \"data\": {\"card_name\": \"Setup\", \"col\": 4}}]",
  "creation": "2026-06-16 14:00:33.968897",
  "custom_blocks": [],
  "docstatus": 0,
@@ -54,16 +54,6 @@
    "label": "Field Job Card",
    "link_count": 0,
    "link_to": "Field Job Card",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project BOQ",
-   "link_count": 0,
-   "link_to": "Project BOQ",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -482,7 +472,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-06-19 12:30:00.000000",
+ "modified": "2026-06-24 00:48:38.336283",
  "modified_by": "Administrator",
  "module": "REGENCE",
  "name": "Regence",
@@ -495,62 +485,65 @@
  "shortcuts": [
   {
    "color": "Green",
+   "doc_view": "",
    "label": "New Project",
    "link_to": "Project",
    "type": "DocType"
   },
   {
    "color": "Blue",
+   "doc_view": "",
    "label": "Sales Order",
    "link_to": "Sales Order",
    "type": "DocType"
   },
   {
    "color": "Orange",
+   "doc_view": "",
    "label": "Purchase Order",
    "link_to": "Purchase Order",
    "type": "DocType"
   },
   {
    "color": "Purple",
+   "doc_view": "",
    "label": "Stock Entry",
    "link_to": "Stock Entry",
    "type": "DocType"
   },
   {
    "color": "Pink",
+   "doc_view": "",
    "label": "Journal Entry",
    "link_to": "Journal Entry",
    "type": "DocType"
   },
   {
    "color": "Red",
+   "doc_view": "",
    "label": "Employee",
    "link_to": "Employee",
    "type": "DocType"
   },
   {
    "color": "Yellow",
+   "doc_view": "",
    "label": "Field Job Card",
    "link_to": "Field Job Card",
    "type": "DocType"
   },
   {
    "color": "Green",
+   "doc_view": "",
    "label": "Leave Application",
    "link_to": "Leave Application",
    "type": "DocType"
   },
   {
    "color": "Blue",
+   "doc_view": "",
    "label": "Salary Slip",
    "link_to": "Salary Slip",
-   "type": "DocType"
-  },
-  {
-   "color": "Cyan",
-   "label": "Project BOQ",
-   "link_to": "Project BOQ",
    "type": "DocType"
   }
  ],

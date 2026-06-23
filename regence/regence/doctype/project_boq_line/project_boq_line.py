@@ -1,5 +1,5 @@
 from frappe.model.document import Document
 
 
-class ProjectBOQItem(Document):
+class ProjectBOQLine(Document):
 	pass

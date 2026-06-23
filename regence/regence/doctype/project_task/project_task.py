@@ -1,5 +1,5 @@
 from frappe.model.document import Document
 
 
-class BOQItem(Document):
+class ProjectTask(Document):
 	pass

@@ -132,7 +132,6 @@ async function render_all() {
 				${qlink("financial-analytics",    __("Financial Analytics"),    "#059669",  "💰")}
 				${qlink("procurement-dashboard",  __("Procurement"),            "#0891B2",  "📦")}
 				${qlink_doc("Field Job Card",     __("Field Job Cards"),        "#7C3AED",  "🔧")}
-				${qlink_doc("Project BOQ",        __("Bill of Quantities"),     "#0891B2",  "📋")}
 				${qlink_doc("Material Request",   __("Material Requests"),      "#D97706",  "📦")}
 				${qlink_doc("Asset",              __("Assets"),                 "#EA580C",  "🏗️")}
 				${qlink_doc("Project",            __("Projects"),               "#4F46E5",  "📁")}

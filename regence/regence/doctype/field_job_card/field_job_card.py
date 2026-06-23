@@ -71,6 +71,9 @@ class FieldJobCard(Document):
 					"uom": row.uom,
 					"rate": row.rate,
 					"amount": row.amount,
+					# Link each line to the project so Project costing
+					# (total_purchase_cost) picks it up once the invoice is submitted.
+					"project": self.project,
 				})
 
 			pi.insert()

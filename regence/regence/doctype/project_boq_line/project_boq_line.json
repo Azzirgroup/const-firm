@@ -1,63 +1,59 @@
 {
  "actions": [],
- "creation": "2026-06-19 00:00:00.000000",
+ "creation": "2026-06-23 00:00:00.000000",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_title",
+  "row_type",
+  "title",
   "item_type",
   "item_code",
-  "item_name",
-  "description",
   "col_break_1",
   "uom",
   "qty",
   "rate",
   "amount",
+  "section_break_more",
+  "description",
   "col_break_2",
-  "brand",
+  "task",
   "remarks"
  ],
  "fields": [
   {
-   "bold": 1,
-   "fieldname": "section_title",
-   "fieldtype": "Data",
+   "columns": 1,
+   "default": "Sub-Section",
+   "fieldname": "row_type",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Section / Phase",
-   "columns": 2
+   "label": "Row Type",
+   "options": "Section\nSub-Section",
+   "reqd": 1
   },
   {
+   "columns": 3,
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Section / Task Title",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "default": "Material",
    "fieldname": "item_type",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Material\nLabour\nEquipment\nSubcontract\nPreliminary",
-   "default": "Material",
-   "columns": 1
+   "options": "Material\nLabour\nEquipment\nSubcontract\nPreliminary"
   },
   {
+   "columns": 1,
    "fieldname": "item_code",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Item Code",
-   "options": "Item",
-   "columns": 2
-  },
-  {
-   "fetch_from": "item_code.item_name",
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item Name",
-   "read_only": 0
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Text",
-   "in_list_view": 1,
-   "label": "Description",
-   "columns": 3
+   "options": "Item"
   },
   {
    "fieldname": "col_break_1",
@@ -67,45 +63,52 @@
    "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "UOM",
-   "options": "UOM",
-   "columns": 1
+   "options": "UOM"
   },
   {
+   "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty",
-   "reqd": 1,
-   "columns": 1
+   "label": "Qty"
   },
   {
+   "columns": 1,
    "fieldname": "rate",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Rate",
-   "reqd": 1,
-   "columns": 2
+   "label": "Rate"
   },
   {
+   "columns": 2,
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "read_only": 1,
-   "columns": 2
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_more",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   },
   {
    "fieldname": "col_break_2",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "item_code.brand",
-   "fieldname": "brand",
+   "description": "Task created from this BOQ line (set automatically).",
+   "fieldname": "task",
    "fieldtype": "Link",
-   "label": "Brand",
-   "options": "Brand"
+   "label": "Linked Task",
+   "no_copy": 1,
+   "options": "Task",
+   "read_only": 1
   },
   {
    "fieldname": "remarks",
@@ -116,10 +119,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-19 10:00:00.000000",
+ "modified": "2026-06-23 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Regence",
- "name": "BOQ Item",
+ "name": "Project BOQ Line",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
