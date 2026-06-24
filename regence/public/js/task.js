@@ -3,9 +3,10 @@ frappe.ui.form.on("Task", {
 		if (frm.is_new()) return;
 
 		const is_completed = frm.doc.status === "Completed";
+		const is_group = !!frm.doc.is_group;
 
-		// No "Create Field Job Card" button for completed tasks.
-		if (!is_completed) {
+		// No "Create Field Job Card" button for completed or parent (group) tasks.
+		if (!is_completed && !is_group) {
 			frm.add_custom_button(__("Field Job Card"), () => {
 				frappe.new_doc("Field Job Card", {
 					task: frm.doc.name,

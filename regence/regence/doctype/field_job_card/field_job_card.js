@@ -37,34 +37,50 @@ frappe.ui.form.on("Field Job Card", {
 frappe.ui.form.on("Field Job Card Material", {
 	item_code(frm, cdt, cdn) {
 		const row = locals[cdt][cdn];
-		if (row.item_code) {
-			frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom", "standard_rate"], (v) => {
-				frappe.model.set_value(cdt, cdn, "item_name", v.item_name);
-				frappe.model.set_value(cdt, cdn, "uom", v.stock_uom);
-				frappe.model.set_value(cdt, cdn, "rate", v.standard_rate);
-				calc_material_amount(frm, cdt, cdn);
-			});
-		}
+		if (!row.item_code) return;
+		frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom"], (v) => {
+			frappe.model.set_value(cdt, cdn, "item_name", v.item_name);
+			frappe.model.set_value(cdt, cdn, "uom", v.stock_uom);
+			fetch_jc_rate(frm, cdt, cdn, "material", calc_material_amount);
+		});
 	},
+	warehouse: (frm, cdt, cdn) => fetch_jc_rate(frm, cdt, cdn, "material", calc_material_amount),
 	qty: (frm, cdt, cdn) => calc_material_amount(frm, cdt, cdn),
-	rate: (frm, cdt, cdn) => calc_material_amount(frm, cdt, cdn),
 });
 
 frappe.ui.form.on("Field Job Card Service", {
 	item_code(frm, cdt, cdn) {
 		const row = locals[cdt][cdn];
-		if (row.item_code) {
-			frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom", "standard_rate"], (v) => {
-				frappe.model.set_value(cdt, cdn, "item_name", v.item_name);
-				frappe.model.set_value(cdt, cdn, "uom", v.stock_uom);
-				frappe.model.set_value(cdt, cdn, "rate", v.standard_rate);
-				calc_service_amount(frm, cdt, cdn);
-			});
-		}
+		if (!row.item_code) return;
+		frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom"], (v) => {
+			frappe.model.set_value(cdt, cdn, "item_name", v.item_name);
+			frappe.model.set_value(cdt, cdn, "uom", v.stock_uom);
+			fetch_jc_rate(frm, cdt, cdn, "service", calc_service_amount);
+		});
 	},
+	supplier: (frm, cdt, cdn) => fetch_jc_rate(frm, cdt, cdn, "service", calc_service_amount),
 	qty: (frm, cdt, cdn) => calc_service_amount(frm, cdt, cdn),
-	rate: (frm, cdt, cdn) => calc_service_amount(frm, cdt, cdn),
 });
+
+// Resolve the cost rate server-side (the rate field is read-only) then recompute.
+function fetch_jc_rate(frm, cdt, cdn, kind, after) {
+	const row = locals[cdt][cdn];
+	if (!row.item_code) return;
+	frappe.call({
+		method: "regence.api.get_job_card_item_rate",
+		args: {
+			item_code: row.item_code,
+			kind: kind,
+			uom: row.uom,
+			supplier: row.supplier,
+			warehouse: row.warehouse,
+		},
+		callback: r => {
+			frappe.model.set_value(cdt, cdn, "rate", flt(r.message));
+			after(frm, cdt, cdn);
+		},
+	});
+}
 
 function calc_material_amount(frm, cdt, cdn) {
 	const row = locals[cdt][cdn];

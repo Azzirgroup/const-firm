@@ -38,7 +38,7 @@ async function render_all() {
 
 	root.html(`
 		<!-- Hero banner -->
-		<div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563EB 100%);border-radius:12px;padding:24px 28px;margin-bottom:20px;color:#fff">
+		<div style="background:linear-gradient(135deg,#064e3b 0%,#16A34A 100%);border-radius:12px;padding:24px 28px;margin-bottom:20px;color:#fff">
 			<div style="font-size:1.5rem;font-weight:700">${__("Regence — Construction Overview")}</div>
 			<div style="opacity:.8;font-size:.9rem;margin-top:4px">${frappe.datetime.str_to_user(today)} · ${__("Real-time snapshot")}</div>
 			<div class="row" style="margin-top:20px">

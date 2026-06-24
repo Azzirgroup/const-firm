@@ -31,24 +31,57 @@ def create_tasks_from_boq(project: str) -> dict:
 	if loose["children"]:
 		groups.insert(0, loose)
 
-	created = updated = 0
+	# Validate: a Section's amount must equal the sum of its sub-sections.
+	mismatches = []
 	for grp in groups:
 		section_row = grp["section"]
+		if section_row is None or not grp["children"]:
+			continue
+		own_amount = flt(section_row.amount)
 		section_amount = sum(flt(c.amount) for c in grp["children"])
+		if own_amount and abs(own_amount - section_amount) > 0.01:
+			mismatches.append((section_row.title or _("(untitled)"), own_amount, section_amount))
+
+	if mismatches:
+		msg = _("Each Section's amount must equal the total of its sub-sections:") + "<ul>"
+		for title, own, total in mismatches:
+			msg += "<li>{0}: {1} &ne; {2}</li>".format(
+				frappe.bold(title),
+				frappe.format_value(own, {"fieldtype": "Currency"}),
+				frappe.format_value(total, {"fieldtype": "Currency"}),
+			)
+		msg += "</ul>" + _(
+			"Leave the Section row's Qty/Rate blank (it rolls up from its sub-sections), "
+			"or correct the sub-section amounts."
+		)
+		frappe.throw(msg, title=_("BOQ Totals Don't Reconcile"))
+
+	created = updated = 0
+	grand_total = 0.0
+	for grp in groups:
+		section_row = grp["section"]
+		children = grp["children"]
+		section_amount = sum(flt(c.amount) for c in children)
 
 		parent_task = None
 		if section_row is not None:
-			# Section amount = its own line amount (if any) or the rollup of children.
-			section_row.amount = flt(section_row.amount) or section_amount
+			# Section with sub-sections rolls up their total; a standalone
+			# section keeps its own line amount.
+			section_total = section_amount if children else flt(section_row.amount)
+			section_row.amount = section_total
+			grand_total += section_total
 			task, is_new = _upsert_task(
 				section_row, project, parent_task=None, is_group=1,
-				costing_amount=section_row.amount or section_amount,
+				costing_amount=section_total,
 			)
 			parent_task = task.name
 			created += int(is_new)
 			updated += int(not is_new)
+		else:
+			# Loose sub-sections with no parent section.
+			grand_total += section_amount
 
-		for child in grp["children"]:
+		for child in children:
 			task, is_new = _upsert_task(
 				child, project, parent_task=parent_task, is_group=0,
 				costing_amount=child.amount,
@@ -56,6 +89,9 @@ def create_tasks_from_boq(project: str) -> dict:
 			)
 			created += int(is_new)
 			updated += int(not is_new)
+
+	# Keep the BOQ Total in sync with the rolled-up section totals.
+	proj.custom_boq_total = grand_total
 
 	# Refresh the read-only Tasks child table mirror.
 	_rebuild_project_tasks(proj)
@@ -190,6 +226,8 @@ def _upsert_task(row, project, parent_task, is_group, costing_amount=0, section_
 	task.subject = row.title
 	task.project = project
 	task.is_group = is_group
+	# Parent (Section) tasks are flagged as milestones automatically.
+	task.is_milestone = 1 if is_group else 0
 	task.parent_task = parent_task
 	if row.description:
 		task.description = row.description
@@ -315,3 +353,62 @@ def _task_and_descendants(task: str) -> list[str]:
 		)
 		return descendants or [task]
 	return [task]
+
+
+# ---------------------------------------------------------------------------
+# Field Job Card -> item rate resolution
+# ---------------------------------------------------------------------------
+@frappe.whitelist()
+def get_job_card_item_rate(item_code: str, kind: str, uom: str = None,
+		supplier: str = None, warehouse: str = None) -> float:
+	"""Resolve the cost rate for a Field Job Card line.
+
+	Materials: last purchase rate -> warehouse/item valuation -> standard rate.
+	Services:  buying price list (supplier-aware) -> last purchase rate -> standard rate.
+	"""
+	item = frappe.db.get_value(
+		"Item", item_code,
+		["stock_uom", "last_purchase_rate", "valuation_rate", "standard_rate"],
+		as_dict=True,
+	)
+	if not item:
+		return 0.0
+
+	uom = uom or item.stock_uom
+	rate = 0.0
+
+	if kind == "service":
+		price_list = frappe.db.get_single_value("Buying Settings", "buying_price_list")
+		if price_list:
+			rate = _buying_price(item_code, price_list, uom, supplier)
+		if not rate:
+			rate = flt(item.last_purchase_rate)
+	else:  # material
+		rate = flt(item.last_purchase_rate)
+		if not rate and warehouse:
+			rate = flt(frappe.db.get_value(
+				"Bin", {"item_code": item_code, "warehouse": warehouse}, "valuation_rate"))
+		if not rate:
+			rate = flt(item.valuation_rate)
+
+	if not rate:
+		rate = flt(item.standard_rate)
+	return rate
+
+
+def _buying_price(item_code, price_list, uom, supplier=None):
+	"""Look up an Item Price in the buying price list, preferring the supplier."""
+	from erpnext.stock.get_item_details import get_item_price
+
+	pctx = {
+		"price_list": price_list,
+		"uom": uom,
+		"supplier": supplier,
+		"transaction_date": frappe.utils.nowdate(),
+	}
+	res = []
+	if supplier:
+		res = get_item_price(pctx, item_code)
+	if not res:
+		res = get_item_price(pctx, item_code, ignore_party=True)
+	return flt(res[0].price_list_rate) if res else 0.0
