@@ -81,6 +81,57 @@ frappe.ui.form.on("Project", {
 		d.show();
 	},
 
+	// Import BOQ lines from the project's linked Sales Order.
+	custom_import_boq_so_btn(frm) {
+		const run = (replace) => {
+			frappe.call({
+				method: "regence.api.import_boq_from_sales_order",
+				args: { project: frm.doc.name, replace: replace ? 1 : 0 },
+				freeze: true,
+				freeze_message: __("Importing from Sales Order..."),
+				callback: r => {
+					if (!r.message) return;
+					frappe.show_alert({
+						message: __("{0} item(s) imported from {1}", [r.message.added, r.message.sales_order]),
+						indicator: "green",
+					});
+					frm.reload_doc();
+				},
+			});
+		};
+		const ask = () => {
+			const d = new frappe.ui.Dialog({
+				title: __("Import BOQ from Sales Order"),
+				fields: [
+					{
+						fieldtype: "HTML",
+						options: `<div style="font-size:.85rem;color:#374151">
+							${__("Pull item codes, quantities and rates from the Sales Order linked to this project into the BOQ as sub-sections.")}
+						</div>`,
+					},
+					{
+						fieldtype: "Check",
+						fieldname: "replace",
+						label: __("Replace existing BOQ lines"),
+					},
+				],
+				primary_action_label: __("Import"),
+				primary_action(v) { d.hide(); run(v.replace); },
+			});
+			d.show();
+		};
+		if (frm.is_dirty()) {
+			frappe.warn(
+				__("Save changes first?"),
+				__("The project has unsaved changes. Save before importing?"),
+				() => frm.save().then(ask),
+				__("Save & Continue")
+			);
+		} else {
+			ask();
+		}
+	},
+
 	// Button custom field on the BOQ tab.
 	custom_create_tasks_btn(frm) {
 		const run = () => {

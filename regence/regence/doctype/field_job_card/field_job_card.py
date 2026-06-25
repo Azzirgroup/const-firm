@@ -19,7 +19,8 @@ class FieldJobCard(Document):
 			frappe.throw(frappe._("Materials already consumed via {0}").format(self.stock_entry))
 
 		for row in self.materials:
-			if not row.warehouse:
+			warehouse = row.warehouse or self.set_warehouse
+			if not warehouse:
 				frappe.throw(
 					frappe._("Source Warehouse is required for item {0} (row {1})").format(
 						row.item_code, row.idx
@@ -29,6 +30,7 @@ class FieldJobCard(Document):
 		stock_entry = frappe.new_doc("Stock Entry")
 		stock_entry.stock_entry_type = "Material Issue"
 		stock_entry.project = self.project
+		stock_entry.from_warehouse = self.set_warehouse
 		stock_entry.remarks = frappe._("Field Job Card: {0}").format(self.name)
 
 		for row in self.materials:
@@ -36,7 +38,7 @@ class FieldJobCard(Document):
 				"item_code": row.item_code,
 				"qty": row.qty,
 				"uom": row.uom,
-				"s_warehouse": row.warehouse,
+				"s_warehouse": row.warehouse or self.set_warehouse,
 				"basic_rate": row.rate,
 			})
 

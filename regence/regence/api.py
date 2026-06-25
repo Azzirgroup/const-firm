@@ -553,3 +553,87 @@ def get_procurement():
 		"pending_receipt": {"total": pending_receipt.total or 0, "count": pending_receipt.cnt or 0},
 		"today":           today,
 	}
+
+
+@frappe.whitelist()
+def get_project_gantt(project: str = None):
+	"""Data for the Project Gantt page: project list, task tree, job cards,
+	and phase/status stats."""
+	projects = frappe.get_all(
+		"Project",
+		fields=[
+			"name", "project_name", "status", "percent_complete",
+			"expected_start_date", "expected_end_date", "customer",
+		],
+		order_by="modified desc",
+	)
+
+	if project and not any(p.name == project for p in projects):
+		project = None
+	if not project and projects:
+		project = projects[0].name
+
+	if not project:
+		return {"projects": projects, "project": None, "tasks": [], "job_cards": [],
+			"stats": {}, "today": frappe.utils.today()}
+
+	proj = frappe.db.get_value(
+		"Project", project,
+		["name", "project_name", "status", "percent_complete",
+		 "expected_start_date", "expected_end_date", "customer"],
+		as_dict=True,
+	)
+
+	tasks = frappe.get_all(
+		"Task",
+		filters={"project": project},
+		fields=[
+			"name", "subject", "status", "progress", "is_group", "parent_task",
+			"exp_start_date", "exp_end_date", "custom_boq_amount",
+			"custom_item_type", "lft", "rgt",
+		],
+		order_by="lft asc",
+	)
+
+	task_names = [t.name for t in tasks]
+	job_cards = []
+	if task_names:
+		job_cards = frappe.get_all(
+			"Field Job Card",
+			filters={"task": ["in", task_names]},
+			fields=[
+				"name", "task", "status", "scheduled_date", "completion_date",
+				"total_material_cost", "total_service_cost",
+			],
+			order_by="scheduled_date asc, creation asc",
+		)
+
+	today = frappe.utils.today()
+	active = [t for t in tasks if not t.is_group]
+	# Stats are based on leaf (actual work) tasks.
+	scope = active or tasks
+	total = len(scope)
+	completed = sum(1 for t in scope if t.status == "Completed")
+	in_progress = sum(1 for t in scope if t.status == "Working")
+	pending = sum(1 for t in scope if t.status in ("Open", "Pending Review"))
+	delayed = sum(
+		1 for t in scope
+		if t.status not in ("Completed", "Cancelled")
+		and t.exp_end_date and str(t.exp_end_date) < today
+	)
+
+	return {
+		"projects": projects,
+		"project": proj,
+		"tasks": tasks,
+		"job_cards": job_cards,
+		"stats": {
+			"total": total,
+			"completed": completed,
+			"in_progress": in_progress,
+			"pending": pending,
+			"delayed": delayed,
+			"job_cards": len(job_cards),
+		},
+		"today": today,
+	}

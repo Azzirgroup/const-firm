@@ -53,10 +53,16 @@ CUSTOM_FIELDS = {
 			"insert_after": "custom_boq_items",
 		},
 		{
+			"fieldname": "custom_import_boq_so_btn",
+			"label": "Import from Sales Order",
+			"fieldtype": "Button",
+			"insert_after": "custom_boq_total",
+		},
+		{
 			"fieldname": "custom_upload_boq_btn",
 			"label": "Bulk Upload BOQ Lines",
 			"fieldtype": "Button",
-			"insert_after": "custom_boq_total",
+			"insert_after": "custom_import_boq_so_btn",
 		},
 		{
 			"fieldname": "custom_create_tasks_btn",

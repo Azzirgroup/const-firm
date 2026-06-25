@@ -307,6 +307,10 @@ def create_sales_invoice_from_task(task: str) -> str:
 
 def _find_sales_order(project: str) -> str | None:
 	"""Best-effort lookup of a submitted Sales Order for the project."""
+	# Prefer the Sales Order set directly on the Project.
+	direct = frappe.db.get_value("Project", project, "sales_order")
+	if direct:
+		return direct
 	so = frappe.get_all(
 		"Sales Order",
 		filters={"project": project, "docstatus": 1},
@@ -315,6 +319,69 @@ def _find_sales_order(project: str) -> str | None:
 		limit=1,
 	)
 	return so[0] if so else None
+
+
+def _guess_item_type(item_code: str) -> str:
+	"""Map an item's group to a BOQ cost type."""
+	grp = (frappe.db.get_value("Item", item_code, "item_group") or "").lower()
+	if "labour" in grp or "labor" in grp:
+		return "Labour"
+	if "equipment" in grp or "plant" in grp:
+		return "Equipment"
+	if "subcontract" in grp:
+		return "Subcontract"
+	return "Material"
+
+
+@frappe.whitelist()
+def import_boq_from_sales_order(project: str, replace=0) -> dict:
+	"""Populate the Project BOQ lines from the items of the linked Sales Order,
+	so each BOQ item code mirrors the sold item."""
+	replace = int(replace)
+	proj = frappe.get_doc("Project", project)
+
+	so_name = _find_sales_order(project)
+	if not so_name:
+		frappe.throw(_("No Sales Order is linked to this project."))
+
+	so_items = frappe.get_all(
+		"Sales Order Item",
+		filters={"parent": so_name},
+		fields=["item_code", "item_name", "description", "uom", "qty", "rate"],
+		order_by="idx asc",
+	)
+	if not so_items:
+		frappe.throw(_("Sales Order {0} has no items.").format(so_name))
+
+	if replace:
+		proj.set("custom_boq_items", [])
+	existing = {r.item_code for r in (proj.get("custom_boq_items") or []) if r.item_code}
+
+	added = 0
+	for it in so_items:
+		if not replace and it.item_code in existing:
+			continue
+		proj.append("custom_boq_items", {
+			"row_type": "Sub-Section",
+			"title": it.item_name or it.item_code,
+			"item_type": _guess_item_type(it.item_code),
+			"item_code": it.item_code,
+			"uom": it.uom,
+			"qty": it.qty,
+			"rate": it.rate,
+			"amount": flt(it.qty) * flt(it.rate),
+			"description": it.description,
+		})
+		existing.add(it.item_code)
+		added += 1
+
+	proj.custom_boq_total = sum(
+		flt(r.qty) * flt(r.rate)
+		for r in proj.get("custom_boq_items") if r.row_type != "Section"
+	)
+	proj.save(ignore_permissions=True)
+
+	return {"added": added, "sales_order": so_name}
 
 
 # ---------------------------------------------------------------------------

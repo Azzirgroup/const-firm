@@ -32,12 +32,31 @@ frappe.ui.form.on("Field Job Card", {
 			}
 		}
 	},
+
+	// Push the header default warehouse onto material rows.
+	set_warehouse(frm) {
+		if (!frm.doc.set_warehouse) return;
+		(frm.doc.materials || []).forEach(row => {
+			if (!row.warehouse) {
+				frappe.model.set_value(row.doctype, row.name, "warehouse", frm.doc.set_warehouse);
+			}
+		});
+	},
 });
 
 frappe.ui.form.on("Field Job Card Material", {
+	materials_add(frm, cdt, cdn) {
+		// Default new rows to the header source warehouse.
+		if (frm.doc.set_warehouse) {
+			frappe.model.set_value(cdt, cdn, "warehouse", frm.doc.set_warehouse);
+		}
+	},
 	item_code(frm, cdt, cdn) {
 		const row = locals[cdt][cdn];
 		if (!row.item_code) return;
+		if (!row.warehouse && frm.doc.set_warehouse) {
+			frappe.model.set_value(cdt, cdn, "warehouse", frm.doc.set_warehouse);
+		}
 		frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom"], (v) => {
 			frappe.model.set_value(cdt, cdn, "item_name", v.item_name);
 			frappe.model.set_value(cdt, cdn, "uom", v.stock_uom);

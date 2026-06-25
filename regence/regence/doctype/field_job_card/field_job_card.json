@@ -17,6 +17,7 @@
   "description",
   "notes",
   "section_break_materials",
+  "set_warehouse",
   "materials",
   "total_material_cost",
   "section_break_services",
@@ -100,6 +101,13 @@
    "fieldname": "section_break_materials",
    "fieldtype": "Section Break",
    "label": "Materials Consumed"
+  },
+  {
+   "description": "Source warehouse applied to material rows that don't have one set.",
+   "fieldname": "set_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
   },
   {
    "fieldname": "materials",

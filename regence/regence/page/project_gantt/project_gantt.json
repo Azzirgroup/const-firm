@@ -1,0 +1,13 @@
+{
+ "doctype": "Page",
+ "module": "Regence",
+ "name": "project-gantt",
+ "page_name": "project-gantt",
+ "roles": [
+  {"doctype": "Page Role", "role": "System Manager"},
+  {"doctype": "Page Role", "role": "Projects Manager"},
+  {"doctype": "Page Role", "role": "Projects User"}
+ ],
+ "standard": "Yes",
+ "title": "Project Gantt View"
+}
