@@ -557,42 +557,39 @@ def get_procurement():
 
 @frappe.whitelist()
 def get_project_gantt(project: str = None):
-	"""Data for the Project Gantt page: project list, task tree, job cards,
-	and phase/status stats."""
+	"""Data for the Project Gantt page.
+
+	With no `project`, returns every project (portfolio view); with a project,
+	returns just that one (drill-down). Each rendered project carries its task
+	tree and job cards, plus overall phase/status stats.
+	"""
+	today = frappe.utils.today()
+
+	proj_filters = {"name": project} if project else {}
 	projects = frappe.get_all(
 		"Project",
+		filters=proj_filters,
 		fields=[
 			"name", "project_name", "status", "percent_complete",
 			"expected_start_date", "expected_end_date", "customer",
 		],
-		order_by="modified desc",
+		order_by="status asc, expected_end_date asc, modified desc",
 	)
 
-	if project and not any(p.name == project for p in projects):
-		project = None
-	if not project and projects:
-		project = projects[0].name
+	if not projects:
+		return {"selected": project, "projects": [], "tasks": [], "job_cards": [],
+			"stats": {}, "today": today}
 
-	if not project:
-		return {"projects": projects, "project": None, "tasks": [], "job_cards": [],
-			"stats": {}, "today": frappe.utils.today()}
-
-	proj = frappe.db.get_value(
-		"Project", project,
-		["name", "project_name", "status", "percent_complete",
-		 "expected_start_date", "expected_end_date", "customer"],
-		as_dict=True,
-	)
-
+	names = [p.name for p in projects]
 	tasks = frappe.get_all(
 		"Task",
-		filters={"project": project},
+		filters={"project": ["in", names]},
 		fields=[
 			"name", "subject", "status", "progress", "is_group", "parent_task",
 			"exp_start_date", "exp_end_date", "custom_boq_amount",
-			"custom_item_type", "lft", "rgt",
+			"custom_item_type", "lft", "rgt", "project",
 		],
-		order_by="lft asc",
+		order_by="project asc, lft asc",
 	)
 
 	task_names = [t.name for t in tasks]
@@ -608,10 +605,8 @@ def get_project_gantt(project: str = None):
 			order_by="scheduled_date asc, creation asc",
 		)
 
-	today = frappe.utils.today()
-	active = [t for t in tasks if not t.is_group]
-	# Stats are based on leaf (actual work) tasks.
-	scope = active or tasks
+	# Stats across leaf (actual work) tasks of the rendered projects.
+	scope = [t for t in tasks if not t.is_group] or tasks
 	total = len(scope)
 	completed = sum(1 for t in scope if t.status == "Completed")
 	in_progress = sum(1 for t in scope if t.status == "Working")
@@ -623,8 +618,8 @@ def get_project_gantt(project: str = None):
 	)
 
 	return {
+		"selected": project,
 		"projects": projects,
-		"project": proj,
 		"tasks": tasks,
 		"job_cards": job_cards,
 		"stats": {
