@@ -4,6 +4,7 @@
  "creation": "2026-06-16 00:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
+ "is_submittable": 1,
  "field_order": [
   "task",
   "project",
@@ -25,7 +26,8 @@
   "total_service_cost",
   "section_break_accounting",
   "stock_entry",
-  "purchase_invoice"
+  "purchase_invoice",
+  "amended_from"
  ],
  "fields": [
   {
@@ -156,6 +158,15 @@
    "label": "Purchase Invoice",
    "options": "Purchase Invoice",
    "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Field Job Card",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "links": [],
@@ -167,6 +178,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -176,9 +189,12 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 0,
    "email": 1,
@@ -188,6 +204,7 @@
    "report": 1,
    "role": "Projects Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -200,6 +217,7 @@
    "report": 1,
    "role": "Projects User",
    "share": 0,
+   "submit": 1,
    "write": 1
   }
  ],

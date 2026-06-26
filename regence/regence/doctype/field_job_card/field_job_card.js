@@ -1,22 +1,17 @@
 frappe.ui.form.on("Field Job Card", {
 	refresh(frm) {
 		if (!frm.is_new()) {
-			if ((frm.doc.materials || []).length && !frm.doc.stock_entry) {
-				frm.add_custom_button(__("Consume Materials"), () => {
-					frm.call("consume_materials").then(r => {
-						if (r.message) {
-							frappe.set_route("Form", "Stock Entry", r.message);
-						}
-					});
-				}, __("Actions"));
-			}
-
-			if ((frm.doc.services || []).length) {
-				frm.add_custom_button(__("Create Purchase Invoice"), () => {
-					frappe.confirm(__("Create Purchase Invoice(s) for the listed services?"), () => {
-						frm.call("create_purchase_invoice").then(() => frm.refresh());
-					});
-				}, __("Actions"));
+			// On submit, materials are consumed and services billed automatically.
+			if (frm.doc.docstatus === 0) {
+				const hint = [];
+				if ((frm.doc.materials || []).length) hint.push(__("consume materials"));
+				if ((frm.doc.services || []).length) hint.push(__("bill services"));
+				if (hint.length) {
+					frm.dashboard.add_comment(
+						__("On Submit, this card will automatically {0}.", [hint.join(" & ")]),
+						"blue", true
+					);
+				}
 			}
 
 			if (frm.doc.stock_entry) {
